@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link th:href="@{/css/bootstrap.min.css}" href="../css/bootstrap.min.css" rel="stylesheet"/>
+    <style>
+        .container {
+            max-width: 560px;
+        }
+        .field-error {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+    </style>
+    <title>로그인폼</title>
+</head>
+<body>
+
+<div class="container">
+
+    <!--/* 헤더 영역 */-->
+    <div class="py-5 text-center">
+        <h2 th:text="#{page.login}"></h2>
+    </div>
+
+    <!--/* 폼 */-->
+    <form th:action="@{/login}" th:object="${loginForm}" method="post">
+
+        <!--/* ObjectError */-->
+        <div th:if="${#fields?.hasGlobalErrors()}">
+            <p th:each="globalError : ${#fields.globalErrors()}" th:text="${globalError}" class="field-error"></p>
+        </div>
+
+        <!--/* 로그인 ID */-->
+        <div>
+            <label for="loginId" th:text="#{label.member.loginId}"></label>
+            <input type="text" id="loginId" th:field="*{loginId}" class="form-control" th:errorclass="field-error">
+            <div th:errors="*{loginId}" class="field-error"></div>
+        </div>
+
+
+        <!--/* 비밀번호 */-->
+        <div>
+            <label for="password" th:text="#{label.member.password}"></label>
+            <input type="password" id="password" th:field="*{password}" class="form-control" th:errorclass="field-error">
+            <div th:errors="*{password}" class="field-error"></div>
+        </div>
+
+        <hr class="my-4"/>
+
+        <div class="row">
+            <div class="col">
+                <!--/* 로그인 버튼 */-->
+                <button type="submit" th:text="#{button.login}" class="w-100 btn btn-primary btn-lg"></button>
+            </div>
+            <div class="col">
+                <!--/* 취소 버튼 */-->
+                <button type="button" th:text="#{button.cancel}" th:onclick="|location.href='@{/}'|" class="w-100 btn btn-secondary btn-lg"></button>
+            </div>
+        </div>
+
+
+    </form>
+
+
+
+</div>
+
+</body>
+</html>
