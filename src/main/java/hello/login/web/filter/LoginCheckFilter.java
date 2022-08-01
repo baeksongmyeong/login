@@ -23,37 +23,35 @@ public class LoginCheckFilter implements Filter {
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String requestURI = httpServletRequest.getRequestURI();
 
-        log.info("인증 체크 필터 종료 {}", requestURI);
-
         try {
-            log.info("인증필터 체크 시작 {}", requestURI);
+            log.info("인증체크 필터 - 시작 {}", requestURI);
 
             // 로그인 필터 SKIP 대상이 아니면
             if (!PatternMatchUtils.simpleMatch(whitelist, requestURI)) {
                 HttpSession session = httpServletRequest.getSession(false);
                 if (session == null) {
-                    log.info("세션이 없음. 미인증 사용자 요청 {}", requestURI);
+                    log.info("인증체크 필터 - 세션이 없음. 미인증 사용자 요청 {}", requestURI);
                     httpServletResponse.sendRedirect("/login?redirectURL=" + requestURI);
                     return;
                 } else {
                     if (session.getAttribute(SessionConst.LOGIN_MEMBER) == null) {
-                        log.info("세션에 로그인 정보가 없음. 미인증 사용자 요청 {}", requestURI);
+                        log.info("인증체크 필터 - 세션에 로그인 정보가 없음. 미인증 사용자 요청 {}", requestURI);
                         httpServletResponse.sendRedirect("/login?redirectURL=" + requestURI);
                         return;
                     } else {
-                        log.info("세션에 로그인 정보가 있음. 인증 사용자 요청 {}", requestURI);
+                        log.info("인증체크 필터 - 세션에 로그인 정보가 있음. 인증 사용자 요청 {}", requestURI);
                         chain.doFilter(request, response);
                     }
                 }
             } else {
-                log.info("인증 체크 필터 대상이 아님 {}", requestURI);
+                log.info("인증체크 필터 - 대상이 아님 {}", requestURI);
                 chain.doFilter(request, response);
             }
 
         } catch ( Exception e) {
             throw e;
         } finally {
-            log.info("인증 체크 필터 종료 {}", requestURI);
+            log.info("인증체크 필터 - 종료 {}", requestURI);
         }
 
     }

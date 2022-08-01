@@ -19,12 +19,12 @@ public class LogFilter implements Filter {
         String uuid = UUID.randomUUID().toString();
 
         try {
-            log.info("REQUEST [{}] [{}]", uuid, requestURI);
+            log.info("로그 필터 - 시작 - REQUEST [{}] [{}]", uuid, requestURI);
             chain.doFilter(request, response);
         } catch (Exception e) {
             throw e;
         } finally {
-            log.info("RESPONSE [{}] [{}]", uuid, requestURI);
+            log.info("로그필터 - 종료 - RESPONSE [{}] [{}]", uuid, requestURI);
         }
     }
 
@@ -35,6 +35,6 @@ public class LogFilter implements Filter {
 
     @Override
     public void destroy() {
-        log.info("로그 필터가 종료됩니다.");
+        log.info("로그 필터가 소멸됩니다.");
     }
 }

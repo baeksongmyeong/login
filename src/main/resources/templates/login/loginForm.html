@@ -24,7 +24,8 @@
     </div>
 
     <!--/* 폼 */-->
-    <form th:action="@{/login}" th:object="${loginForm}" method="post">
+    <!--<form th:action="@{/login}" th:object="${loginForm}" method="post">-->
+    <form th:action th:object="${loginForm}" method="post">
 
         <!--/* ObjectError */-->
         <div th:if="${#fields?.hasGlobalErrors()}">

@@ -2,6 +2,7 @@ package hello.login.web;
 
 import hello.login.domain.member.Member;
 import hello.login.domain.member.MemberRepository;
+import hello.login.web.argumentresolver.Login;
 import hello.login.web.session.SessionManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -91,14 +92,23 @@ public class HomeController {
 //    }
 
     // 스프링이 제공하는 세션을 편리하게 사용할 수 있는 @SessionAttribute 어노테이션 적용 컨트롤러
+//    @GetMapping("/")
+//    public String homeV5(
+//            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+//            Model model
+//    ) {
+//        if (loginMember == null) return "home";
+//        model.addAttribute("member", loginMember);
+//        return "loginHome";
+//    }
+
     @GetMapping("/")
-    public String homeV5(
-            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+    public String homeLoginV3ArgumentResolver(
+            @Login Member loginMember,
             Model model
     ) {
         if (loginMember == null) return "home";
         model.addAttribute("member", loginMember);
         return "loginHome";
     }
-
 }

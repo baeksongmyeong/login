@@ -8,10 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.Cookie;
@@ -95,27 +92,54 @@ public class LoginController {
 //    }
 
     // 서블릿이 자동 제공하는 HttpSession 을 적용한 로그인 컨트롤러
+//    @PostMapping("/login")
+//    public String loginV3(
+//            @ModelAttribute(name = "loginForm") LoginForm loginForm,
+//            BindingResult bindingResult,
+//            HttpServletRequest request
+//    ) {
+//        // 타입변환 오류 처리
+//        if(bindingResult.hasErrors()) return "login/loginForm";
+//        // 회원조회
+//        Member loginMember = loginService.login(loginForm.getLoginId(), loginForm.getPassword());
+//        if (loginMember == null) {
+//            bindingResult.reject("loginFail", "아이디나 암호가 유효하지 않습니다.");
+//            return "login/loginForm";
+//        }
+//        // HTTP 요청에 세션이 있으면 기존 세션 반환. 없으면 HTTP 요청에 세션 생성. 저장소를 만드는것?
+//        HttpSession session = request.getSession(true);
+//        // 세션에 키 ("loginMember") / 값 (loginMember) 저장
+//        session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
+//
+//        return "redirect:/";
+//    }
+
+    // 로그인시 요청된 URL 이 있으면 해당 URL 로 이동하는 기능 추가
     @PostMapping("/login")
-    public String loginV3(
+    public String loginV4(
             @ModelAttribute(name = "loginForm") LoginForm loginForm,
             BindingResult bindingResult,
+            @RequestParam(defaultValue = "/") String redirectURL,
             HttpServletRequest request
     ) {
-        // 타입변환 오류 처리
-        if(bindingResult.hasErrors()) return "login/loginForm";
-        // 회원조회
-        Member loginMember = loginService.login(loginForm.getLoginId(), loginForm.getPassword());
-        if (loginMember == null) {
+        if (bindingResult.hasErrors()) return "login/loginForm";
+
+        log.info("loginV4 - redirectURL={}", redirectURL);
+        request.getParameterMap().forEach((k, d) -> log.info("key {} : data {}", k, d));
+
+        Member member = loginService.login(loginForm.getLoginId(), loginForm.getPassword());
+
+        if (member == null) {
             bindingResult.reject("loginFail", "아이디나 암호가 유효하지 않습니다.");
             return "login/loginForm";
         }
-        // HTTP 요청에 세션이 있으면 기존 세션 반환. 없으면 HTTP 요청에 세션 생성. 저장소를 만드는것?
-        HttpSession session = request.getSession(true);
-        // 세션에 키 ("loginMember") / 값 (loginMember) 저장
-        session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
 
-        return "redirect:/";
+        HttpSession session = request.getSession(true);
+        session.setAttribute(SessionConst.LOGIN_MEMBER, member);
+        return "redirect:" + redirectURL;
     }
+
+
 
     // 로그아웃 처리
     // 로그인 시 생성해서 클라이언트에게 제공했던 쿠키를 만료시켜야 한다
